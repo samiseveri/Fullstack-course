@@ -1,24 +1,28 @@
 import ReactDOM from 'react-dom/client'
 import App from './App'
 
-const notes = [
-  {
-    id: 1,
-    content: 'HTML is easy... But .JSX is not >:(',
-    important: true
-  },
-  {
-    id: 2,
-    content: 'Browser can execute only JavaScript',
-    important: false
-  },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    important: true
-  }
+
+const courses = [
+{
+id: 1,
+name: 'Half Stack application development',
+parts: [
+{ id: 1, name: 'Fundamentals of React', exercises: 10 },
+{ id: 2, name: 'Using props to pass data', exercises: 7 },
+{ id: 3, name: 'State of a component', exercises: 14 }
+]
+},
+{
+id: 2,
+name: 'Node.js',
+parts: [
+{ id: 1, name: 'Routing', exercises: 3 },
+{ id: 2, name: 'Middlewares', exercises: 7 }
+]
+}
 ]
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <App notes={notes} />
+<App courses={courses} />
 )

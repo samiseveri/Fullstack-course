@@ -1,14 +1,16 @@
-const App = (props) => {
-  const { notes } = props
+import Course from './components/Course'
 
-  return (
-    <div>
-      <h1>Super päheet merkinnät😎</h1>
-      <ul>
-        {notes.map(note => <li>{note.content}</li>)}
-      </ul>
-    </div>
-  )
+
+const App = ({ courses }) => {
+return (
+<div>
+<h1>Web Development Curriculum</h1>
+{courses.map(course => (
+<Course key={course.id} course={course} />
+))}
+</div>
+)
 }
+
 
 export default App
