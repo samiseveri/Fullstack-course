@@ -16,7 +16,6 @@ const App = () => {
         exercises: 14
       }
     ]
-    
   }
 
   const [good, setGood] = useState(0)
