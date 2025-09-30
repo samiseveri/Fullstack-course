@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "axios": "^1.12.2"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "part3",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samiseveri/Fullstack-course.git"
+  },
+  "keywords": [
+    "part3"
+  ],
+  "author": "Matti Luukkainen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samiseveri/Fullstack-course/issues"
+  },
+  "homepage": "https://github.com/samiseveri/Fullstack-course#readme"
+}
