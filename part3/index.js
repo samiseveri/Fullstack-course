@@ -79,18 +79,12 @@ app.get('/info', (req, res) => {
   `)
 })
 
-// 🔥 Palvellaan frontendin build (dist)
-app.use(express.static(path.join(__dirname, 'dist')))
-
 // ⚙️ middleware unknown endpoint
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
 
 
 // Käynnistys
@@ -98,3 +92,5 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+
