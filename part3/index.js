@@ -1,18 +1,17 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const path = require('path')
 const morgan = require('morgan')
-
-const baseUrl = 'http://localhost:3001/api/notes'
 
 app.use(cors())
 app.use(express.json())
 
-// määritellään morgan-token bodyn näyttämiseen
+// Morgan loggeri
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-// oma loggeri (materiaalin mukaan)
+// Oma loggeri
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
@@ -22,7 +21,7 @@ const requestLogger = (request, response, next) => {
 }
 app.use(requestLogger)
 
-// data
+// Data
 let persons = [
   { id: 1, name: "Arto Hellas", number: "040-123456" },
   { id: 2, name: "Ada Lovelace", number: "39-44-5323523" },
@@ -31,7 +30,7 @@ let persons = [
   { id: 5, name: "Sami-Severi Sjöberg", number: "Vittuuks se sulle kuuluu" }
 ]
 
-// routes
+// API-reitit
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
@@ -80,14 +79,22 @@ app.get('/info', (req, res) => {
   `)
 })
 
-// middleware unknown endpoint
+// 🔥 Palvellaan frontendin build (dist)
+app.use(express.static(path.join(__dirname, 'dist')))
+
+// ⚙️ middleware unknown endpoint
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
+
+// Käynnistys
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-
