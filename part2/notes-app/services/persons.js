@@ -1,9 +1,16 @@
-import axios from 'axios'
+const mongoose = require('mongoose')
 
-const baseUrl = '/api/persons'
-const getAll = () => axios.get(baseUrl).then(r => r.data)
-const create = newPerson => axios.post(baseUrl, newPerson).then(r => r.data)
-const update = (id, newPerson) => axios.put(`${baseUrl}/${id}`, newPerson).then(r => r.data)
-const remove = id => axios.delete(`${baseUrl}/${id}`)
+const personSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  number: { type: String, required: true }
+})
 
-export default { getAll, create, update, remove }
+personSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+module.exports = mongoose.model('Person', personSchema)
