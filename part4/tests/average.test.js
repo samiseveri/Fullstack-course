@@ -1,6 +1,6 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
-const { average } = require('../utils/for_testing')
+const { average } = require('./utils/for_testing')
 
 describe('average', () => {
   test('of one value is the value itself', () => {
