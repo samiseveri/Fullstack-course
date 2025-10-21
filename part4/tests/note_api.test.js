@@ -1,8 +1,9 @@
 // tests/note_api.test.js
 const supertest = require('supertest')
+const mongoose = require('mongoose')
 const app = require('../app')
-const api = supertest(app)           // <- Korjattu: api on nyt määritelty
-const Note = require('../models/note') // <- Korjattu: Note on nyt tuotu
+const api = supertest(app)           
+const Note = require('../models/note') 
 
 beforeEach(async () => {
   await Note.deleteMany({})
@@ -73,5 +74,5 @@ describe('DELETE /api/notes/:id', () => {
 })
 
 afterAll(async () => {
-  await mongoose.connection.close() // <- Muista sulkea MongoDB-yhteys
+  await mongoose.connection.close()
 })
