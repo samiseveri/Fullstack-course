@@ -1,4 +1,4 @@
-const { reverse } = require('../utils/for_testing')
+const { reverse } = require('./utils/for_testing')
 
 test('reverse of a', () => {
   expect(reverse('a')).toBe('a')

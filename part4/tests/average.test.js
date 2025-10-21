@@ -1,4 +1,4 @@
-const { average } = require('../utils/for_testing')
+const { average } = require('./utils/for_testing')
 
 test('average of one value is the value itself', () => {
   expect(average([1])).toBe(1)
