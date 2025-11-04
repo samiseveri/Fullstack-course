@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/notes', notesRouter)
 
-// Error handling middleware
+
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
