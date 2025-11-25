@@ -1,12 +1,26 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-export default function Exercise7_17(){
-  const loc = useLocation();
-  useEffect(() => { window.scrollTo(0,0); }, [loc.pathname]);
+import React, { useState } from 'react';
+import { useNavigate, useBlocker } from 'react-router-dom';
+
+const Exercise7_17 = () => {
+  const [text, setText] = useState('');
+  const navigate = useNavigate();
+  const blocker = useBlocker(text !== '', 'Unsaved changes!');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setText('');
+    navigate('/');
+  };
+
   return (
     <div>
-      <h2>Exercise 7.17 — Scroll restoration</h2>
-      <p>Scrolls to top on route change (simple example).</p>
+      <h2>Form Navigation Guard</h2>
+      <form onSubmit={handleSubmit}>
+        <input value={text} onChange={(e) => setText(e.target.value)} />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Exercise7_17;

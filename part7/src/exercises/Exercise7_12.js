@@ -1,14 +1,16 @@
 import React from 'react';
-import { Routes, Route, Link, useMatch } from 'react-router-dom';
-function ShowMatch(){ const m = useMatch('/7.12/:name'); return <div>Match: {m?.params.name ?? 'none'}</div>; }
-export default function Exercise7_12(){
-  return (
-    <div>
-      <h2>Exercise 7.12 — useMatch</h2>
-      <nav><Link to="alice">Alice</Link> | <Link to="bob">Bob</Link></nav>
-      <Routes>
-        <Route path=":name" element={<ShowMatch />} />
-      </Routes>
-    </div>
-  );
-}
+import { Outlet, Link } from 'react-router-dom';
+
+const Layout = () => (
+  <div>
+    <nav>
+      <Link to="/">Home</Link> | <Link to="/about">About</Link>
+    </nav>
+    <hr />
+    <Outlet />
+  </div>
+);
+
+const Exercise7_12 = () => <Layout />;
+
+export default Exercise7_12;

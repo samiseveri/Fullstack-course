@@ -1,16 +1,36 @@
-import React from 'react';
-import { useBlocker } from "react-router-dom"
-export default function Exercise7_16(){
-  
-  try {
-    useBlocker(() => {
-      
-    });
-  } catch(e){}
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const Exercise7_16 = () => {
+  const [value, setValue] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleWindowClose = (e) => {
+      if (value !== '') {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleWindowClose);
+    return () => window.removeEventListener('beforeunload', handleWindowClose);
+  }, [value]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setValue('');
+    navigate('/');
+  };
+
   return (
     <div>
-      <h2>Exercise 7.16 — Navigation blocking (illustrative)</h2>
-      <p>This example is illustrative. See course notes for full implementation.</p>
+      <h2>Form Blocking Demo</h2>
+      <form onSubmit={handleSubmit}>
+        <input value={value} onChange={(e) => setValue(e.target.value)} />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Exercise7_16;
