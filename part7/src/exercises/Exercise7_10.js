@@ -1,14 +1,25 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-function NotFound(){ return <div>404 — Not Found</div>; }
-export default function Exercise7_10(){
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const Exercise7_10 = () => {
+  const [value, setValue] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(value);
+    navigate('/');
+  };
+
   return (
     <div>
-      <h2>Exercise 7.10 — 404 handling</h2>
-      <Routes>
-        <Route path="/" element={<div>Index</div>} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <h2>Navigate After Submit</h2>
+      <form onSubmit={handleSubmit}>
+        <input value={value} onChange={(e) => setValue(e.target.value)} />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Exercise7_10;

@@ -1,14 +1,25 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-export default function Exercise7_9(){
+import React, { useState } from 'react';
+
+const Notification = ({ message }) => {
+  if (!message) return null;
+  return <div style={{ border: '1px solid black', padding: '5px', margin: '5px 0' }}>{message}</div>;
+};
+
+const Exercise7_9 = () => {
+  const [notification, setNotification] = useState('');
+
+  const createAnecdote = () => {
+    setNotification('A new anecdote created!');
+    setTimeout(() => setNotification(''), 5000);
+  };
+
   return (
     <div>
-      <h2>Exercise 7.9 — Redirect example</h2>
-      <Routes>
-        <Route path="old" element={<Navigate to="/7.9/new" replace />} />
-        <Route path="new" element={<div>New route</div>} />
-      </Routes>
-      <p>Visit <code>/7.9/old</code> to be redirected to <code>/7.9/new</code>.</p>
+      <h2>Notification Demo</h2>
+      <Notification message={notification} />
+      <button onClick={createAnecdote}>Create Anecdote</button>
     </div>
   );
-}
+};
+
+export default Exercise7_9;
