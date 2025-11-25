@@ -1,13 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-export default function Exercise7_1(){
+import { Routes, Route, Link } from 'react-router-dom';
+
+const Home = () => <h2>Home</h2>;
+const About = () => <h2>About</h2>;
+const Create = () => <h2>Create New</h2>;
+
+const Exercise7_1 = () => {
   return (
     <div>
-      <h2>Exercise 7.1 — Simple Links</h2>
-      <p>This demonstrates basic <code>Link</code> usage.</p>
+      <h1>Exercise 7.1</h1>
       <nav>
-        <Link to="/7.2">Go to 7.2</Link>
+        <Link to="/">Anecdotes</Link> |{' '}
+        <Link to="/create">Create New</Link> |{' '}
+        <Link to="/about">About</Link>
       </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create" element={<Create />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
     </div>
   );
-}
+};
+
+export default Exercise7_1;

@@ -1,10 +1,10 @@
 import React from 'react';
-import { unstable_useBlocker as useBlocker } from 'react-router-dom';
+import { useBlocker } from "react-router-dom"
 export default function Exercise7_16(){
-  // Note: real blocking in RR v6 is more involved; here is a small illustrative placeholder.
+  
   try {
     useBlocker(() => {
-      // noop: illustrative only
+      
     });
   } catch(e){}
   return (
