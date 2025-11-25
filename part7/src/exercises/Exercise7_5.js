@@ -1,11 +1,20 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-export default function Exercise7_5(){
-  const navigate = useNavigate();
+import React, { useState } from 'react';
+
+const Exercise7_5 = () => {
+  const [notification, setNotification] = useState('');
+
+  const handleClick = () => {
+    setNotification('Anecdote created!');
+    setTimeout(() => setNotification(''), 5000);
+  };
+
   return (
     <div>
-      <h2>Exercise 7.5 — useNavigate</h2>
-      <button onClick={() => navigate('/7.3')}>Go to 7.3</button>
+      <h2>Notification Demo</h2>
+      {notification && <div style={{ border: '1px solid black', padding: '5px' }}>{notification}</div>}
+      <button onClick={handleClick}>Create Anecdote</button>
     </div>
   );
-}
+};
+
+export default Exercise7_5;
