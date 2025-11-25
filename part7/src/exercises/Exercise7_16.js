@@ -1,55 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { usePrompt } from '../hooks/usePrompt';
 
-const Exercise7_16 = () => {
-  const [value, setValue] = useState('');
+const Exercise7_16 = ({ addAnecdote }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isBlocking, setIsBlocking] = useState(false);
+  const [content, setContent] = useState('');
+  const [author, setAuthor] = useState('');
+  const [info, setInfo] = useState('');
+  const [formDirty, setFormDirty] = useState(false);
 
-  useEffect(() => {
-    setIsBlocking(value !== '');
-  }, [value]);
-
-  // Warn user on browser refresh/close
-  useEffect(() => {
-    const handleWindowClose = (e) => {
-      if (isBlocking) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    };
-    window.addEventListener('beforeunload', handleWindowClose);
-    return () => window.removeEventListener('beforeunload', handleWindowClose);
-  }, [isBlocking]);
-
-  // Custom navigation guard
-  const handleNavigate = (to) => {
-    if (isBlocking) {
-      if (window.confirm('You have unsaved changes. Leave anyway?')) {
-        navigate(to);
-      }
-    } else {
-      navigate(to);
-    }
+  const handleChange = (setter) => (event) => {
+    setter(event.target.value);
+    setFormDirty(true);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setValue('');
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    addAnecdote({ content, author, info, votes: 0 });
+    setContent('');
+    setAuthor('');
+    setInfo('');
+    setFormDirty(false);
     navigate('/');
   };
 
+  // Warn user if trying to leave with unsaved changes
+  usePrompt('You have unsaved changes. Are you sure?', formDirty);
+
   return (
     <div>
-      <h2>Form Blocking Demo</h2>
+      <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
-        <input value={value} onChange={(e) => setValue(e.target.value)} />
-        <button type="submit">Submit</button>
+        <div>
+          content
+          <input value={content} onChange={handleChange(setContent)} />
+        </div>
+        <div>
+          author
+          <input value={author} onChange={handleChange(setAuthor)} />
+        </div>
+        <div>
+          url for more info
+          <input value={info} onChange={handleChange(setInfo)} />
+        </div>
+        <button type="submit">create</button>
       </form>
-      <br />
-      <button onClick={() => handleNavigate('/')}>Go to Home</button>
-      <Link to="/">Home link (no guard)</Link>
     </div>
   );
 };

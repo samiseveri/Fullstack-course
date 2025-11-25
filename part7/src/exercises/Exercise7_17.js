@@ -1,63 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { usePrompt } from '../hooks/usePrompt';
 
 const Exercise7_17 = () => {
-  const [input, setInput] = useState('');
-  const [isBlocking, setIsBlocking] = useState(false);
-  const navigate = useNavigate();
+  const [text, setText] = useState('');
+  const [formDirty, setFormDirty] = useState(false);
 
-  useEffect(() => {
-    setIsBlocking(input !== '');
-  }, [input]);
-
-  // Warn on browser refresh/close
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (isBlocking) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isBlocking]);
-
-  // Custom navigation guard for buttons/links
-  const handleNavigate = (to) => {
-    if (isBlocking) {
-      if (window.confirm('You have unsaved changes. Leave anyway?')) {
-        navigate(to);
-      }
-    } else {
-      navigate(to);
-    }
+  const handleChange = (event) => {
+    setText(event.target.value);
+    setFormDirty(true);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Submitted: ${input}`);
-    setInput('');
-    navigate('/');
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    alert(`Submitted: ${text}`);
+    setText('');
+    setFormDirty(false);
   };
+
+  // Warn user if trying to leave with unsaved changes
+  usePrompt('You have unsaved changes. Are you sure?', formDirty);
 
   return (
     <div>
-      <h2>Exercise 7.17: Form Blocking Demo</h2>
+      <h2>Exercise 7.17 - Block Navigation Example</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type something..."
-        />
+        <input value={text} onChange={handleChange} />
         <button type="submit">Submit</button>
       </form>
-
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={() => handleNavigate('/')}>Go Home</button>
-        <br />
-        <Link to="/">Link to Home (no guard)</Link>
-      </div>
     </div>
   );
 };
