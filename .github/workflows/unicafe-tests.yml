@@ -15,19 +15,19 @@ jobs:
           node-version: 24
 
       - name: Install unicafe dependencies
-        working-directory: part 6/unicafe
+        working-directory: nutshell part 6/unicafe
         run: npm ci
 
       - name: Install test dependencies
-        working-directory: part 6/unicafe-tests
+        working-directory: nutshell part 6/unicafe-tests
         run: npm ci
 
       - name: Install Playwright browsers
-        working-directory: part 6/unicafe-tests
+        working-directory: nutshell part 6/unicafe-tests
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        working-directory: part 6/unicafe-tests
+        working-directory: nutshell part 6/unicafe-tests
         run: npx playwright test
 
       - name: Upload Playwright report
@@ -35,5 +35,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: part 6/unicafe-tests/playwright-report/
+          path: nutshell part 6/unicafe-tests/playwright-report/
           retention-days: 14

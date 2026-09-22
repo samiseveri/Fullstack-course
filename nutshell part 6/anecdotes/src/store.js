@@ -1,19 +1,15 @@
 import { create } from 'zustand'
+import { useNotificationStore } from './notificationStore'
 
 const baseUrl = 'http://localhost:3001/anecdotes'
 
-let notificationTimer
-
-const showNotification = (set, message) => {
-  clearTimeout(notificationTimer)
-  set({ notification: message })
-  notificationTimer = setTimeout(() => set({ notification: '' }), 5000)
+const notify = (message) => {
+  useNotificationStore.getState().setNotification(message)
 }
 
 export const useAnecdoteStore = create((set) => ({
   anecdotes: [],
   filter: '',
-  notification: '',
   actions: {
     initialize: async () => {
       const response = await fetch(baseUrl)
@@ -29,6 +25,7 @@ export const useAnecdoteStore = create((set) => ({
       })
       const created = await response.json()
       set((state) => ({ anecdotes: state.anecdotes.concat(created) }))
+      notify(`you created '${created.content}'`)
     },
     vote: async (anecdote) => {
       const updated = { ...anecdote, votes: anecdote.votes + 1 }
@@ -41,7 +38,7 @@ export const useAnecdoteStore = create((set) => ({
       set((state) => ({
         anecdotes: state.anecdotes.map((item) => (item.id === saved.id ? saved : item)),
       }))
-      showNotification(set, `you voted '${saved.content}'`)
+      notify(`you voted '${saved.content}'`)
     },
     remove: async (anecdote) => {
       await fetch(`${baseUrl}/${anecdote.id}`, { method: 'DELETE' })
@@ -55,5 +52,4 @@ export const useAnecdoteStore = create((set) => ({
 export const useAnecdotes = () => useAnecdoteStore((state) => state.anecdotes)
 
 export const useFilter = () => useAnecdoteStore((state) => state.filter)
-export const useNotification = () => useAnecdoteStore((state) => state.notification)
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)
