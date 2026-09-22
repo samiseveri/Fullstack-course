@@ -1,0 +1,26 @@
+{
+  "name": "chapter-4",
+  "version": "1.0.0",
+  "description": "Blog backend with migrations, reading lists and sessions",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx sequelize-cli db:migrate && node index.js",
+    "dev": "nodemon index.js",
+    "start:test": "cross-env TESTING=true npx sequelize-cli db:migrate && cross-env TESTING=true node index.js",
+    "test": "cross-env TESTING=true node --test --test-concurrency=1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "axios": "^1.7.9",
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.1.9",
+    "sequelize-cli": "^6.6.2"
+  }
+}
