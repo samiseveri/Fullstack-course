@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #1f2933;
+  background: #f7f4ef;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  background: #1f2933;
+}
+
+.nav a {
+  color: #f7f4ef;
+}
+
+.nav button {
+  margin-left: auto;
+}
+
+.content {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.2rem;
+}
+
+.notification {
+  max-width: 40rem;
+  margin: 1rem auto 0;
+  padding: 0.7rem 1rem;
+  background: #e7f6e7;
+  border: 1px solid #2f6f2f;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid #d9d3c7;
+}
+
+.blog button {
+  margin-left: 0.6rem;
+}

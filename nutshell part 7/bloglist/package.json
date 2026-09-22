@@ -1,0 +1,13 @@
+{
+  "name": "bloglist",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server",
+    "format": "prettier --write \"client/src/**/*.{js,jsx,css}\" \"server/**/*.js\""
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}
