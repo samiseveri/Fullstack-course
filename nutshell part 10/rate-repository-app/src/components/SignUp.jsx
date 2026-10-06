@@ -1,7 +1,8 @@
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet, Alert } from 'react-native';
 import { useNavigate } from 'react-router-native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import Constants from 'expo-constants';
 import Text from './Text';
 import TextInput from './TextInput';
 import theme from '../theme';
@@ -123,6 +124,15 @@ const SignUp = () => {
       navigate('/');
     } catch (e) {
       console.log(e);
+      const detail =
+        e.networkError?.message ||
+        e.graphQLErrors?.map((err) => err.message).join('\n') ||
+        e.message ||
+        'Unknown error';
+      Alert.alert(
+        'Sign up failed',
+        `${detail}\n\nAPI: ${Constants.expoConfig?.extra?.apolloUri || process.env.EXPO_PUBLIC_APOLLO_URI || '(not set)'}`,
+      );
     }
   };
 

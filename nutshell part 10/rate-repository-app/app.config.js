@@ -18,6 +18,7 @@ export default {
         backgroundImage: './assets/android-icon-background.png',
         monochromeImage: './assets/android-icon-monochrome.png',
       },
+      usesCleartextTraffic: true,
     },
     web: {
       favicon: './assets/favicon.png',
