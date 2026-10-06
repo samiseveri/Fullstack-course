@@ -6,7 +6,7 @@ Next.js App Router blog application with Drizzle ORM, PostgreSQL (Neon), and Nex
 
 - **Repository:** https://github.com/samiseveri/Fullstack-course  
   App path: `nutshell part 14/blog-app`
-- **CI:** [`.github/workflows/blog-app-playwright.yml`](../../.github/workflows/blog-app-playwright.yml) (requires GitHub secrets `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`)
+- **CI:** [`.github/workflows/blog-app-playwright.yml`](../../.github/workflows/blog-app-playwright.yml) (requires GitHub secrets `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`). Re-run via **Actions → Blog app E2E (Part 14) → Run workflow** or a push under this folder.
 
 ## Setup
 
