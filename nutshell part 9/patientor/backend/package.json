@@ -1,0 +1,27 @@
+{
+  "name": "patientor-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "node --watch --experimental-transform-types src/index.ts",
+    "start": "node --experimental-transform-types src/index.ts",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "uuid": "^11.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.6",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^10.1.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.57.2"
+  }
+}
