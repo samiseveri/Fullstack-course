@@ -9,6 +9,7 @@
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
     "expo-status-bar": "~57.0.1",
+    "expo-updates": "~57.0.25",
     "formik": "^2.4.9",
     "graphql": "^16.14.2",
     "react": "19.2.3",

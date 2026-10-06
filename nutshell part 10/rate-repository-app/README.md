@@ -8,15 +8,21 @@ Full Stack Open Part 10 — React Native rate-repository application (Expo).
 
 > If the QR code is missing from the readme, your submissions will be rejected, and you will fail the course.
 
-Publish with EAS Update, then replace the image below with a screenshot of the Expo QR code for that update (Expo Go / emulator):
+Published EAS Update (branch `preview`, message "Part 10 submission"):
+
+- **Dashboard:** https://expo.dev/accounts/samiseveri/projects/rate-repository-app/updates/1e10abd1-5cf4-4512-9020-d388c39f2946
+- **Expo Go deep link:** `exp://u.expo.dev/b78ed124-5c3f-4692-8557-28a44816c6b2?channel-name=preview`
+
+![EAS Update QR code](./assets/eas-update-qr.png)
+
+Re-publish:
 
 ```bash
 npm install -g eas-cli
 eas login
-eas update --branch preview --message "Part 10 submission"
+cd "nutshell part 10/rate-repository-app"
+eas update --branch preview --environment preview --message "Part 10 submission"
 ```
-
-![EAS Update QR code](./assets/eas-update-qr.png)
 
 ## Setup
 
