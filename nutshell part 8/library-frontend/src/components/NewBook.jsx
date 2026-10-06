@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -7,6 +9,30 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  const [createBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }],
+    awaitRefetchQueries: true,
+    update: (cache, { data }) => {
+      if (!data?.addBook) {
+        return
+      }
+      cache.updateQuery({ query: ALL_BOOKS }, (existing) => {
+        if (!existing) {
+          return existing
+        }
+        if (existing.allBooks.some((book) => book.id === data.addBook.id)) {
+          return existing
+        }
+        return {
+          allBooks: existing.allBooks.concat(data.addBook),
+        }
+      })
+    },
+    onError: (error) => {
+      console.log(error.graphQLErrors?.[0]?.message || error.message)
+    },
+  })
+
   if (!props.show) {
     return null
   }
@@ -14,7 +40,14 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
+    await createBook({
+      variables: {
+        title,
+        author,
+        published: Number(published),
+        genres,
+      },
+    })
 
     setTitle('')
     setPublished('')
@@ -32,29 +65,34 @@ const NewBook = (props) => {
     <div>
       <form onSubmit={submit}>
         <div>
-          title
+          <label htmlFor="title">title</label>
           <input
+            id="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
-          author
+          <label htmlFor="author">author</label>
           <input
+            id="author"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
-          published
+          <label htmlFor="published">published</label>
           <input
+            id="published"
             type="number"
             value={published}
             onChange={({ target }) => setPublished(target.value)}
           />
         </div>
         <div>
+          <label htmlFor="genre">genre</label>
           <input
+            id="genre"
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />

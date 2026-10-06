@@ -1,8 +1,38 @@
-const Authors = (props) => {
-  if (!props.show) {
+import { useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
+
+const Authors = ({ show, token }) => {
+  const result = useQuery(ALL_AUTHORS)
+  const [name, setName] = useState('')
+  const [born, setBorn] = useState('')
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+  })
+
+  const authors = result.data?.allAuthors || []
+
+  useEffect(() => {
+    if (!name && authors.length > 0) {
+      setName(authors[0].name)
+    }
+  }, [authors, name])
+
+  if (!show) {
     return null
   }
-  const authors = []
+
+  if (result.loading) {
+    return <div>loading...</div>
+  }
+
+  const submit = async (event) => {
+    event.preventDefault()
+    await editAuthor({
+      variables: { name, setBornTo: Number(born) },
+    })
+    setBorn('')
+  }
 
   return (
     <div>
@@ -23,6 +53,37 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+
+      {token && (
+        <div>
+          <h3>Set birthyear</h3>
+          <form onSubmit={submit}>
+            <div>
+              name
+              <select
+                name="name"
+                value={name || authors[0]?.name || ''}
+                onChange={({ target }) => setName(target.value)}
+              >
+                {authors.map((a) => (
+                  <option key={a.id} value={a.name}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="born">born</label>
+              <input
+                id="born"
+                value={born}
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
+            <button type="submit">update author</button>
+          </form>
+        </div>
+      )}
     </div>
   )
 }
