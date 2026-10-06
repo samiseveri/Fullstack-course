@@ -1,17 +1,44 @@
 "use client"
 
+import { useState, useTransition } from "react"
 import { generateApiTokenAction } from "@/lib/actions/token"
 
-export function GenerateTokenButton() {
+type Props = {
+  initialToken?: string | null
+}
+
+export function GenerateTokenButton({ initialToken = null }: Props) {
+  const [token, setToken] = useState<string | null>(initialToken)
+  const [pending, startTransition] = useTransition()
+
   return (
-    <form action={generateApiTokenAction}>
+    <div className="space-y-3">
+      {token ? (
+        <div data-testid="token-display">
+          <code
+            data-testid="api-token"
+            className="block break-all rounded bg-gray-100 p-2"
+          >
+            {token}
+          </code>
+        </div>
+      ) : (
+        <p data-testid="no-token-message">No API token generated yet</p>
+      )}
       <button
-        type="submit"
+        type="button"
         data-testid="generate-token-button"
-        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        disabled={pending}
+        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-60"
+        onClick={() => {
+          startTransition(async () => {
+            const next = await generateApiTokenAction()
+            setToken(next)
+          })
+        }}
       >
-        Generate token
+        {pending ? "Generating…" : "Generate token"}
       </button>
-    </form>
+    </div>
   )
 }

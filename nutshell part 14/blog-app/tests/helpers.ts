@@ -44,8 +44,8 @@ export const loginUser = async (
   await page.getByLabel("Username", { exact: true }).fill(username)
   await page.getByLabel("Password", { exact: true }).fill(password)
   await page.getByRole("button", { name: "Login" }).click()
-  // Wait for navigation or notification
-  await page.waitForURL("/")
+  // App redirects to /?notification=logged-in
+  await page.waitForURL((url) => url.pathname === "/")
 }
 
 export const createBlog = async (
@@ -59,6 +59,6 @@ export const createBlog = async (
   await page.getByLabel("Author", { exact: true }).fill(author)
   await page.getByLabel("URL", { exact: true }).fill(url)
   await page.getByRole("button", { name: "Create" }).click()
-  // Wait for navigation to blogs page
-  await page.waitForURL("/blogs")
+  // Wait for navigation to blogs page (may include query string)
+  await page.waitForURL((url) => url.pathname === "/blogs")
 }

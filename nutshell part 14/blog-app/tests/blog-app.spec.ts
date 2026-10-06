@@ -64,7 +64,7 @@ test.describe("Blog Application", () => {
       await page.getByTestId("login-button").click()
 
       // Should redirect to home page and show success notification
-      await expect(page).toHaveURL("/")
+      await expect(page).toHaveURL((url) => url.pathname === "/")
       await expect(page.getByTestId("notification")).toBeVisible()
     })
 
@@ -200,8 +200,8 @@ test.describe("Blog Application", () => {
       await page.getByLabel("URL", { exact: true }).fill("http://testblog.com")
       await page.getByTestId("create-blog-button").click()
 
-      // Should redirect to blogs page
-      await expect(page).toHaveURL("/blogs")
+      // Should redirect to blogs page (notification query allowed)
+      await expect(page).toHaveURL((url) => url.pathname === "/blogs")
 
       // Should show success notification
       await expect(page.getByTestId("notification")).toBeVisible()
@@ -304,8 +304,8 @@ test.describe("Blog Application", () => {
     test("redirects to login if not authenticated", async ({ page }) => {
       await page.goto("/me")
 
-      // Should redirect to login page
-      await expect(page).toHaveURL("/login")
+      // Should redirect to login page (NextAuth may add callbackUrl)
+      await expect(page).toHaveURL((url) => url.pathname === "/login")
     })
 
     test("shows user profile information", async ({ page }) => {

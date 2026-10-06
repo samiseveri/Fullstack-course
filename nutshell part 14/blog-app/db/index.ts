@@ -1,15 +1,9 @@
-import dotenv from "dotenv"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import * as schema from "./schema"
 
-if (process.env.CI) {
-  dotenv.config({ path: ".env.test" })
-} else {
-  const envFile =
-    process.env.NODE_ENV === "test" ? ".env.test" : ".env.local"
-  dotenv.config({ path: envFile })
-}
+// Next.js / Playwright already load .env.local into process.env.
+// Avoid dotenv here — it uses process.cwd and breaks Edge middleware.
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set")

@@ -1,11 +1,8 @@
-import { auth } from "@/auth"
+import NextAuth from "next-auth"
+import { authConfig } from "@/auth.config"
 
-export default auth((req) => {
-  if (!req.auth) {
-    return Response.redirect(new URL("/login", req.nextUrl))
-  }
-})
+export default NextAuth(authConfig).auth
 
 export const config = {
-  matcher: ["/me"],
+  matcher: ["/me/:path*"],
 }

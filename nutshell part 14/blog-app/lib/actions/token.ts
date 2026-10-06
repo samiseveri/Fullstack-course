@@ -21,4 +21,5 @@ export async function generateApiTokenAction() {
     .where(eq(users.id, Number(session.user.id)))
 
   revalidatePath("/me")
+  return token
 }

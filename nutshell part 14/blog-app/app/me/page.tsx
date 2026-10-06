@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { GenerateTokenButton } from "@/components/GenerateTokenButton"
 import { MarkReadButton } from "@/components/MarkReadButton"
@@ -9,7 +10,7 @@ import { blogs, readingListItems, users } from "@/db/schema"
 export default async function MePage() {
   const session = await auth()
   if (!session?.user?.id) {
-    return null
+    redirect("/login")
   }
 
   const userId = Number(session.user.id)
@@ -77,18 +78,7 @@ export default async function MePage() {
 
       <section data-testid="api-token-section" className="rounded border bg-white p-4">
         <h2 className="mb-3 text-xl font-semibold">API token</h2>
-        {user?.apiToken ? (
-          <div data-testid="token-display">
-            <code data-testid="api-token" className="block break-all rounded bg-gray-100 p-2">
-              {user.apiToken}
-            </code>
-          </div>
-        ) : (
-          <p data-testid="no-token-message">No API token generated yet</p>
-        )}
-        <div className="mt-3">
-          <GenerateTokenButton />
-        </div>
+        <GenerateTokenButton initialToken={user?.apiToken} />
       </section>
     </div>
   )
