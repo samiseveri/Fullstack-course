@@ -1,5 +1,5 @@
-# Replace app name after: fly apps create <your-app-name>
-app = 'fullstackopen-cicd-pokedex'
+# Global names must be unique on Fly; create with: fly apps create samiseveri-pokedex-cicd
+app = 'samiseveri-pokedex-cicd'
 primary_region = 'arn'
 
 [build]
