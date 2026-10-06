@@ -4,6 +4,15 @@ This project is the **Part 11 (CI/CD)** pokedex exercise app from Full Stack Ope
 
 Fork or clone the course repo and complete the exercises in the [Continuous Integration MOOC module](https://courses.mooc.fi/org/uh-cs/courses/full-stack-open-continuous-integration) (Part 11 material on fullstackopen.com links there).
 
+## Submission links (exercises 21–23)
+
+- **Pokedex repository (this monorepo):** https://github.com/samiseveri/Fullstack-course  
+  App path: [`nutshell part 11/full-stack-open-pokedex`](./)
+- **Deployed pokedex:** https://fullstackopen-cicd-pokedex.fly.dev  
+  (Replace with your live Fly/Render URL after `fly launch` / deploy succeeds. Health: `/health`, version: `/version`.)
+- **Own CI/CD app repository (exercises 21–22):** https://github.com/samiseveri/Fullstack-course  
+  Pipelines live under [`.github/workflows/`](../../.github/workflows/) (e.g. Patientor / bloglist / pokedex workflows).
+
 ## Commands
 
 From this directory:
