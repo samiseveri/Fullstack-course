@@ -1,0 +1,28 @@
+# Replace app name after: fly apps create <your-app-name>
+app = 'fullstackopen-cicd-pokedex'
+primary_region = 'arn'
+
+[build]
+
+[http_service]
+  internal_port = 5000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/health'
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[processes]
+  app = 'npm run start-prod'
