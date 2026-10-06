@@ -24,6 +24,15 @@ export default {
     },
     extra: {
       apolloUri: process.env.EXPO_PUBLIC_APOLLO_URI,
+      eas: {
+        projectId: 'b78ed124-5c3f-4692-8557-28a44816c6b2',
+      },
+    },
+    updates: {
+      url: 'https://u.expo.dev/b78ed124-5c3f-4692-8557-28a44816c6b2',
+    },
+    runtimeVersion: {
+      policy: 'appVersion',
     },
   },
 };

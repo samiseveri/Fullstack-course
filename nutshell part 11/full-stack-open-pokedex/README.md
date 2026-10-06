@@ -9,7 +9,7 @@ Fork or clone the course repo and complete the exercises in the [Continuous Inte
 - **Pokedex repository (this monorepo):** https://github.com/samiseveri/Fullstack-course  
   App path: [`nutshell part 11/full-stack-open-pokedex`](./)
 - **Deployed pokedex:** https://samiseveri-pokedex-cicd.fly.dev  
-  Health: `/health`, version: `/version` (after `fly deploy` on your account).
+  Health: https://samiseveri-pokedex-cicd.fly.dev/health — version: `/version`
 - **Own CI/CD app repository (exercises 21–22):** https://github.com/samiseveri/Fullstack-course  
   Pipelines live under [`.github/workflows/`](../../.github/workflows/) (e.g. Patientor / bloglist / pokedex workflows).
 
@@ -52,7 +52,7 @@ Required GitHub secret:
 3. Add GitHub repo secret `FLY_API_TOKEN`: run `flyctl tokens create deploy -a samiseveri-pokedex-cicd` and paste the token at [Actions secrets](https://github.com/samiseveri/Fullstack-course/settings/secrets/actions).
 4. Push to `main`/`master` to deploy via CI, or run `npm run deploy` locally (see `scripts/deploy-fly.ps1`).
 
-Release versioning (course exercise): bump `"version"` in `package.json`, commit, tag (e.g. `git tag -a v1.0.1`), push the tag, and verify `https://<your-app>.fly.dev/version`.
+Release versioning (course exercise): bump `"version"` in `package.json`, commit, tag (e.g. `git tag -a v1.0.1`), push the tag, and verify https://samiseveri-pokedex-cicd.fly.dev/version .
 
 ## Local verification
 

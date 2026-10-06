@@ -2,6 +2,8 @@
 
 Full Stack Open Part 10 — React Native rate-repository application (Expo).
 
+**Monorepo:** https://github.com/samiseveri/Fullstack-course (`nutshell part 10/rate-repository-app`)
+
 ## QR code (EAS Update)
 
 > If the QR code is missing from the readme, your submissions will be rejected, and you will fail the course.
