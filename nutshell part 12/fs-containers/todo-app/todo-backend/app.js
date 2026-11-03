@@ -15,4 +15,9 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/todos', todosRouter);
 
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ error: 'internal server error' });
+});
+
 module.exports = app;

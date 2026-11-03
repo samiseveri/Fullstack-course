@@ -6,6 +6,7 @@
 var app = require('../app');
 var debug = require('debug')('todo-express-backend:server');
 var http = require('http');
+var { connectWithRetry } = require('../mongo');
 
 /**
  * Get port from environment and store in Express.
@@ -15,18 +16,30 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTP server after MongoDB is ready.
  */
 
-var server = http.createServer(app);
+connectWithRetry()
+  .then(function () {
+    var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+    function onListening() {
+      var addr = server.address();
+      var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+      debug('Listening on ' + bind);
+      console.log('Backend listening on ' + bind);
+    }
+  })
+  .catch(function (err) {
+    console.error('Failed to start backend:', err);
+    process.exit(1);
+  });
 
 /**
  * Normalize a port into a number, string, or false.
@@ -74,16 +87,4 @@ function onError(error) {
     default:
       throw error;
   }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
 }
