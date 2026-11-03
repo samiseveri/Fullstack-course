@@ -39,18 +39,22 @@ jobs:
 
       - name: Start todo-app with Docker Compose
         working-directory: ./todo-app
-        run: docker compose up -d
+        run: docker compose up -d --wait --wait-timeout 180
 
       - name: Wait for services to be ready
         run: |
+          echo "Container status:"
+          docker compose -f todo-app/compose.yaml ps
           echo "Waiting for nginx frontend on port 8080..."
-          timeout 120 bash -c 'until curl -f http://localhost:8080 > /dev/null 2>&1; do sleep 2; done'
+          timeout 180 bash -c 'until curl -sf http://localhost:8080 > /dev/null; do sleep 2; done'
           echo "Waiting for backend API via nginx..."
-          timeout 120 bash -c 'until curl -f http://localhost:8080/api/todos > /dev/null 2>&1; do sleep 2; done'
+          timeout 180 bash -c 'until curl -sf http://localhost:8080/api/todos > /dev/null; do sleep 2; done'
           echo "Services are ready!"
           
       - name: Check running containers
-        run: docker ps
+        run: |
+          docker ps -a
+          docker compose -f todo-app/compose.yaml logs --no-color mongo backend | tail -n 80
 
       - name: Install dependencies
         working-directory: ./todo-tests
@@ -84,6 +88,10 @@ jobs:
         if: failure()
         working-directory: ./todo-app
         run: |
+          echo "=== docker ps -a ==="
+          docker ps -a
+          echo "=== Mongo logs ==="
+          docker compose logs mongo
           echo "=== Backend logs ==="
           docker compose logs backend
           echo "=== Frontend logs ==="

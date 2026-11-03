@@ -1,11 +1,25 @@
 services:
   mongo:
-    image: mongo:8
+    image: mongo:7
     volumes:
       - mongo_data:/data/db
+    # Ensure mongod keeps running and is reachable on the compose network
+    command: ["mongod", "--bind_ip_all"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
 
   redis:
     image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
 
   backend:
     image: todo-backend
@@ -14,10 +28,14 @@ services:
     environment:
       MONGO_URL: mongodb://mongo:27017/todos
       REDIS_URL: redis://redis:6379
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
     depends_on:
-      - mongo
-      - redis
-    restart: on-failure
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
 
   app:
     image: todo-front
@@ -37,6 +55,8 @@ services:
     depends_on:
       - app
       - backend
+    # Re-resolve backend hostname so restarts don't leave a stale upstream IP
+    restart: unless-stopped
 
 volumes:
   mongo_data:
