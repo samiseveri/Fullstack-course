@@ -1,5 +1,12 @@
 const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
+const { expressMiddleware } = require('@as-integrations/express4')
+const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { useServer } = require('graphql-ws/use/ws')
+const express = require('express')
+const http = require('http')
+const cors = require('cors')
+const { WebSocketServer } = require('ws')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -25,22 +32,59 @@ mongoose
     console.log('error connection to MongoDB:', error.message)
   })
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+const schema = makeExecutableSchema({ typeDefs, resolvers })
+
+const app = express()
+const httpServer = http.createServer(app)
+
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: '/graphql',
 })
 
-startStandaloneServer(server, {
-  listen: { port: PORT },
-  context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
-    }
-    return {}
-  },
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
+const serverCleanup = useServer({ schema }, wsServer)
+
+const server = new ApolloServer({
+  schema,
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose()
+          },
+        }
+      },
+    },
+  ],
 })
+
+const context = async ({ req }) => {
+  const auth = req ? req.headers.authorization : null
+  if (auth && auth.startsWith('Bearer ')) {
+    const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
+    const currentUser = await User.findById(decodedToken.id)
+    return { currentUser }
+  }
+  return {}
+}
+
+const start = async () => {
+  await server.start()
+
+  app.get('/', (_req, res) => {
+    res.status(200).send('library-backend')
+  })
+
+  app.use(cors())
+  app.use(express.json())
+  app.use(expressMiddleware(server, { context }))
+
+  httpServer.listen(PORT, () => {
+    console.log(`Server ready at http://localhost:${PORT}`)
+    console.log(`Subscriptions ready at ws://localhost:${PORT}/graphql`)
+  })
+}
+
+start()

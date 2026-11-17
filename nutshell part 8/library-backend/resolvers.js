@@ -1,8 +1,11 @@
 const { GraphQLError } = require('graphql')
+const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -22,7 +25,23 @@ const resolvers = {
       }
       return Book.find(filter).populate('author')
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      const [authors, counts] = await Promise.all([
+        Author.find({}),
+        Book.aggregate([
+          { $group: { _id: '$author', bookCount: { $sum: 1 } } },
+        ]),
+      ])
+      const countByAuthor = new Map(
+        counts.map((row) => [row._id.toString(), row.bookCount]),
+      )
+      return authors.map((author) => ({
+        name: author.name,
+        born: author.born,
+        id: author._id.toString(),
+        bookCount: countByAuthor.get(author._id.toString()) || 0,
+      }))
+    },
     me: (_root, _args, context) => context.currentUser,
   },
   Author: {
@@ -80,7 +99,9 @@ const resolvers = {
         })
       }
 
-      return book.populate('author')
+      await book.populate('author')
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+      return book
     },
     editAuthor: async (_root, args, context) => {
       if (!context.currentUser) {
@@ -140,6 +161,11 @@ const resolvers = {
       await Author.deleteMany({})
       await User.deleteMany({})
       return true
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
     },
   },
 }
