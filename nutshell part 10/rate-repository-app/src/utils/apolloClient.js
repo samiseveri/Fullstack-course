@@ -30,7 +30,23 @@ const createApolloClient = (authStorage) => {
 
   return new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Repository: {
+          fields: {
+            reviews: {
+              keyArgs: false,
+              merge(existing = { edges: [] }, incoming) {
+                return {
+                  ...incoming,
+                  edges: [...existing.edges, ...incoming.edges],
+                };
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 };
 
