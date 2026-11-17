@@ -68,3 +68,8 @@ npm run start-prod
 # curl http://localhost:5000/health
 # curl http://localhost:5000/version
 ```
+
+## Exercise 11.22
+
+Pull request opened for branch protection / code review exercise.
+
