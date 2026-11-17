@@ -12,6 +12,7 @@ on:
       - 'nutshell part 11/full-stack-open-pokedex/**'
       - '.github/workflows/pokedex-pipeline.yml'
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 env:
   CI: true
@@ -24,6 +25,8 @@ defaults:
 jobs:
   lint_test_build:
     runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.gate.outputs.should_deploy }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,15 +48,36 @@ jobs:
         run: npm run build
 
       - name: Test
-        run: npm test
+        run: npm test -- --ci
 
-  deploy:
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokedex-playwright-report
+          path: nutshell part 11/full-stack-open-pokedex/playwright-report/
+          retention-days: 14
+
+      - name: Decide if should deploy
+        id: gate
+        run: |
+          echo "should_deploy=${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}" >> "$GITHUB_OUTPUT"
+
+  tag_and_deploy:
     needs: lint_test_build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    if: needs.lint_test_build.outputs.should_deploy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -68,12 +92,33 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          WITH_V: true
+
       - name: Setup Fly.io CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        # Fly free trial can expire; keep lint/test/build as the required green checks.
+        # Fly free trial can expire; keep lint/test/build/e2e as required green checks.
         continue-on-error: true
+        id: deploy
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Health check
+        continue-on-error: true
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS https://samiseveri-pokedex-cicd.fly.dev/health | grep -q ok; then
+              echo "Health check OK"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Health check did not pass (Fly may be unavailable)"
+          exit 0
