@@ -1,0 +1,52 @@
+# Part 12 exercises 12.22 — production-style library app stack
+services:
+  mongo:
+    image: mongo:7
+    command: ["mongod", "--bind_ip_all"]
+    volumes:
+      - mongo_data:/data/db
+      - ../nutshell part 8/library-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
+
+  backend:
+    image: library-backend
+    build:
+      context: ../nutshell part 8/library-backend
+      dockerfile: Dockerfile
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/library
+      JWT_SECRET: library-secret
+      PORT: 4000
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  app:
+    image: library-frontend
+    build:
+      context: ../nutshell part 8/library-frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_GRAPHQL_HTTP: /graphql
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

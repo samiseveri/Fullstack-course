@@ -30,6 +30,7 @@ Scan with **Expo Go**:
 ## Part 12 — Containers
 
 - Todo stack: [`todo-app/`](todo-app/), E2E: [`todo-tests/`](todo-tests/)
+- Library app (12.21–12.22): [`library-app/`](library-app/)
 
 ## Part 13 — Relational databases
 

@@ -13,13 +13,23 @@ import { setContext } from '@apollo/client/link/context'
 import { createClient } from 'graphql-ws'
 import App from './App.jsx'
 
+const httpUri =
+  import.meta.env.VITE_GRAPHQL_HTTP ||
+  (import.meta.env.DEV ? 'http://localhost:4000/graphql' : '/graphql')
+
+const wsUri =
+  import.meta.env.VITE_GRAPHQL_WS ||
+  (import.meta.env.DEV
+    ? 'ws://localhost:4000/graphql'
+    : `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/graphql`)
+
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000',
+  uri: httpUri,
 })
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:4000/graphql',
+    url: wsUri,
   }),
 )
 
