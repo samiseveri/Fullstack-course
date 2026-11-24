@@ -39,3 +39,4 @@ Scan with **Expo Go**:
 ## Part 14 — Next.js
 
 - Blog app (grading): [`nutshell part 14/blog-app`](nutshell%20part%2014/blog-app/)
+- Deployed: https://fullstack-blog-app-red.vercel.app
