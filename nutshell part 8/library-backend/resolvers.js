@@ -150,7 +150,7 @@ const resolvers = {
       }
 
       return {
-        value: jwt.sign(userForToken, process.env.JWT_SECRET),
+        value: jwt.sign(userForToken, process.env.JWT_SECRET || 'secret'),
       }
     },
     _resetDatabase: async () => {

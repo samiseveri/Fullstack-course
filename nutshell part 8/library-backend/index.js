@@ -73,16 +73,23 @@ const context = async ({ req }) => {
 const start = async () => {
   await server.start()
 
+  app.get('/health', (_req, res) => {
+    res.status(200).send('ok')
+  })
+
   app.get('/', (_req, res) => {
     res.status(200).send('library-backend')
   })
 
-  app.use(cors())
-  app.use(express.json())
-  app.use(expressMiddleware(server, { context }))
+  app.use(
+    '/graphql',
+    cors(),
+    express.json(),
+    expressMiddleware(server, { context }),
+  )
 
   httpServer.listen(PORT, () => {
-    console.log(`Server ready at http://localhost:${PORT}`)
+    console.log(`Server ready at http://localhost:${PORT}/graphql`)
     console.log(`Subscriptions ready at ws://localhost:${PORT}/graphql`)
   })
 }
