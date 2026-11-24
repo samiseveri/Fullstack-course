@@ -24,7 +24,7 @@ defaults:
 
 jobs:
   lint_test_build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       should_deploy: ${{ steps.gate.outputs.should_deploy }}
     steps:
@@ -72,7 +72,7 @@ jobs:
   tag_and_deploy:
     needs: lint_test_build
     if: needs.lint_test_build.outputs.should_deploy == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4

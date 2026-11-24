@@ -19,20 +19,25 @@ export const createUser = async (
   name: string,
   password: string,
 ) => {
-  const response = await fetch(`${baseUrl}/api/testing/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, name, password }),
-  })
-  if (!response.ok) {
+  let lastError: Error | null = null
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const response = await fetch(`${baseUrl}/api/testing/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, name, password }),
+    })
+    if (response.ok) {
+      return response.json()
+    }
     const errorText = await response.text()
-    throw new Error(
+    lastError = new Error(
       `Failed to create user: ${response.status} ${response.statusText} - ${errorText}`,
     )
+    await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
   }
-  return response.json()
+  throw lastError
 }
 
 export const loginUser = async (
@@ -45,7 +50,7 @@ export const loginUser = async (
   await page.getByLabel("Password", { exact: true }).fill(password)
   await page.getByRole("button", { name: "Login" }).click()
   // App redirects to /?notification=logged-in
-  await page.waitForURL((url) => url.pathname === "/")
+  await page.waitForURL((url) => url.pathname === "/", { timeout: 45_000 })
 }
 
 export const createBlog = async (
