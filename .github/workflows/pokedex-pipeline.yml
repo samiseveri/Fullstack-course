@@ -73,11 +73,14 @@ jobs:
     needs: lint_test_build
     if: needs.lint_test_build.outputs.should_deploy == 'true'
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
